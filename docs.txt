@@ -1,0 +1,5 @@
+# ejecutar comandos composer
+docker run --rm --interactive --tty --volume $PWD:/app composer create-project laravel/laravel:^10.0 qmonitor
+
+# laravel/ui
+https://github.com/laravel/ui

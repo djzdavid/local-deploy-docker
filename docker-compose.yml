@@ -1,0 +1,44 @@
+version: '3'
+services:
+
+  php:
+    image: ${PROJECT_NAME}-php
+    container_name: ${PROJECT_NAME}-php
+    restart: unless-stopped
+    tty: true
+    working_dir: /var/www/html
+    volumes:
+      - ./qmonitor/:/var/www/html
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+
+  nginx:
+    container_name: ${PROJECT_NAME}-nginx
+    image: ${PROJECT_NAME}-nginx
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "81:80"
+      - "444:443"
+    working_dir: /var/www/html
+    volumes:
+      - ./qmonitor/:/var/www/html
+      - ./docker/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
+      - ./docker/nginx/ssl/:/etc/nginx/ssl/
+
+  mysql:
+    container_name: ${PROJECT_NAME}-mysql
+    image: mysql:8.0
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - dbdata:/var/lib/mysql/
+      - ./docker/mysql/my.cnf:/etc/mysql/my.cnf
+
+volumes:
+  dbdata:
+    driver: local
